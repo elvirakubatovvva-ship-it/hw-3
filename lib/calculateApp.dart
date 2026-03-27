@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/calculateScreen.dart';
+import 'calculateScreen.dart';
 
-class Calculateapp extends StatelessWidget{
-  const Calculateapp({super.key});
+class CalculateApp extends StatelessWidget {
+  const CalculateApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-   return MaterialApp(
-    debugShowCheckedModeBanner: false,
-home: const CalculatorScreen() ,
-   );
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Calculator',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const CalculateScreen(),
+    );
   }
 }

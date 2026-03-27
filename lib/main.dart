@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/calculateApp.dart';
+import 'calculateApp.dart';
 
-void main() => runApp(Calculateapp());
+void main() {
+  runApp(const CalculateApp());
+}
 

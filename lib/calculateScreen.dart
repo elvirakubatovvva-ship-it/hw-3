@@ -1,78 +1,78 @@
 import 'package:flutter/material.dart';
 
-class CalculatorScreen extends StatefulWidget {
-  const CalculatorScreen({super.key});
+class CalculateScreen extends StatefulWidget {
+  const CalculateScreen({super.key});
 
   @override
-  State<CalculatorScreen> createState() => _CalculatorScreenState();
+  State<CalculateScreen> createState() => _CalculateScreenState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen> {
-  final TextEditingController firstController = TextEditingController();
-  final TextEditingController secondController = TextEditingController();
-  double result = 0;
+class _CalculateScreenState extends State<CalculateScreen> {
+  final TextEditingController _num1Controller = TextEditingController();
+  final TextEditingController _num2Controller = TextEditingController();
+  String _result = "Результат";
 
-  double get firstValue => double.tryParse(firstController.text) ?? 0;
-  double get secondValue => double.tryParse(secondController.text) ?? 0;
+  void _calculate(String operator) {
+    // Пробуем преобразовать текст в числа
+    double? n1 = double.tryParse(_num1Controller.text);
+    double? n2 = double.tryParse(_num2Controller.text);
+
+    if (n1 == null || n2 == null) {
+      setState(() => _result = "Введите числа!");
+      return;
+    }
+
+    double res = 0;
+
+    switch (operator) {
+      case '+': res = n1 + n2; break;
+      case '-': res = n1 - n2; break;
+      case '*': res = n1 * n2; break; 
+      case '/': 
+                                                             // Логика деления с проверкой на НОЛЬ
+        if (n2 == 0) {
+          setState(() => _result = "Ошибка: деление на 0!");
+          return;
+        }
+        res = n1 / n2; 
+        break;
+    }
+
+    setState(() {
+     
+      _result = res % 1 == 0 ? res.toInt().toString() : res.toStringAsFixed(2);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Мини-калькулятор"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Калькулятор')),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: firstController,
+              controller: _num1Controller,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Первое число",
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Число 1'),
             ),
-            const SizedBox(height: 16),
             TextField(
-              controller: secondController,
+              controller: _num2Controller,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: "Второе число",
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(labelText: 'Число 2'),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 30),
+            Text(_result, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () => setState(() => result = firstValue + secondValue),
-                  child: const Text("+", style: TextStyle(fontSize: 24)),
-                ),
-                ElevatedButton(
-                  onPressed: () => setState(() => result = firstValue - secondValue),
-                  child: const Text("−", style: TextStyle(fontSize: 24)),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  onPressed: () {
-                    setState(() {
-                      firstController.clear();
-                      secondController.clear();
-                      result = 0;
-                    });
-                  },
-                  child: const Text("Сброс"),
-                ),
+                _buildOpButton('+'),
+                _buildOpButton('-'),
+                _buildOpButton('*'),
+                _buildOpButton('/'),
               ],
-            ),
-            const SizedBox(height: 30),
-            Text(
-              "Результат: $result",
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -80,10 +80,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    firstController.dispose();
-    secondController.dispose();
-    super.dispose();
+  Widget _buildOpButton(String op) {
+    return ElevatedButton(
+      onPressed: () => _calculate(op),
+      child: Text(op, style: const TextStyle(fontSize: 20)),
+    );
   }
 }
